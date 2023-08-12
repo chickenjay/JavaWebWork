@@ -1,5 +1,24 @@
 <template>
   <div>
+
+    <el-menu router style="border: none" :default-active="$route.path">
+      <el-menu-item index="/">
+        <template slot="title">
+          <i class="el-icon-house"></i>
+          <span>系统首页</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/element">Element页面</el-menu-item>
+      <el-menu-item>系统首页</el-menu-item>
+      <el-menu-item>系统首页</el-menu-item>
+      <el-submenu>
+        <template slot="title">
+          <i class="el-icon-menu"></i>
+          <span>信息管理</span>
+        </template>
+        <el-menu-item>用户信息</el-menu-item>
+      </el-submenu>
+    </el-menu>
 <!--    <el-row :gutter="20">-->
 <!--      <el-col :span="1">-->
 <!--        <div style="width: 100%; height: 300px; background-color: dodgerblue"></div>-->
