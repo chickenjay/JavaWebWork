@@ -5,6 +5,7 @@ import com.example.springboot.common.Page;
 import com.example.springboot.entity.User;
 import com.example.springboot.exception.ServiceException;
 import com.example.springboot.mapper.UserMapper;
+import com.example.springboot.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +77,9 @@ public class UserService {
         if (!user.getPassword().equals(dbUser.getPassword())) {
             throw new ServiceException("用户名或密码错误");
         }
+        // 生成token
+        String token = TokenUtils.createToken(dbUser.getId().toString(), dbUser.getPassword());
+        dbUser.setToken(token);
         return dbUser;
     }
 

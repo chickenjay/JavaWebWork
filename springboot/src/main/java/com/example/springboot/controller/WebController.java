@@ -1,6 +1,7 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.example.springboot.common.AuthAccess;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
@@ -22,6 +23,7 @@ public class WebController {
     @Resource
     UserService userService;
 
+    @AuthAccess
     @GetMapping("/")
     public Result hello() {
         return Result.success("success");
@@ -36,6 +38,7 @@ public class WebController {
         return Result.success(user);
     }
 
+    @AuthAccess
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
