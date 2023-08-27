@@ -206,7 +206,7 @@ export default {
       })
     },
     handleFileUpload(response, file, fileList) {
-      this.fileList = fileList
+      console.log(response, file, fileList)
     },
     logout() {
       localStorage.removeItem('honey-user')  // 清除当前的token和用户数据
