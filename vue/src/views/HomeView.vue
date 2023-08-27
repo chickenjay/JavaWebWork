@@ -68,7 +68,7 @@
           </div>
 
           <div style="display: flex">
-            <el-card style="width: 50%; margin-right: 10px">
+            <el-card style="width: 30%; margin-right: 10px">
               <div slot="header" class="clearfix">
                 <span>青哥哥带你做毕设2024</span>
               </div>
@@ -85,7 +85,7 @@
               </div>
             </el-card>
 
-            <el-card style="width: 50%">
+            <el-card style="width: 70%">
               <div slot="header" class="clearfix">
                 <span>渲染用户的数据</span>
               </div>
@@ -95,10 +95,61 @@
                   <el-table-column label="用户名" prop="username"></el-table-column>
                   <el-table-column label="姓名" prop="name"></el-table-column>
                   <el-table-column label="地址" prop="address"></el-table-column>
+                  <el-table-column label="文件上传">
+                   <template v-slot="scope">
+                     <el-upload
+                         action="http://localhost:9090/file/upload"
+                         :headers="{token: user.token}"
+                         :show-file-list="false"
+                         :on-success="(row, file, fileList) => handleTableFileUpload(scope.row, file, fileList)"
+                     >
+                       <el-button size="mini" type="primary">点击上传</el-button>
+                     </el-upload>
+                   </template>
+                  </el-table-column>
+                  <el-table-column label="文件上传">
+                    <template v-slot="scope">
+                      <el-image v-if="scope.row.avatar" :src="scope.row.avatar" style="width: 50px; height: 50px"></el-image>
+                      <div><el-button @click="preview(scope.row.avatar)">预览</el-button></div>
+                    </template>
+                  </el-table-column>
                 </el-table>
               </div>
             </el-card>
           </div>
+
+          <div style="display: flex; margin: 10px 0">
+            <el-card style="width: 50%; margin-right: 10px">
+              <div slot="header" class="clearfix">
+                <span>文件上传下载</span>
+              </div>
+              <div>
+                <el-upload
+                    action="http://localhost:9090/file/upload"
+                    :headers="{token: user.token}"
+                    :on-success="handleFileUpload"
+                >
+                  <el-button size="mini" type="primary">单文件上传</el-button>
+                </el-upload>
+
+              </div>
+
+              <div style="margin: 10px 0">
+                <el-upload
+                    action="http://localhost:9090/file/upload"
+                    :headers="{token: user.token}"
+                    :on-success="handleMultipleFileUpload"
+                    multiple
+                >
+                  <el-button size="mini" type="success">多文件上传</el-button>
+                </el-upload>
+                <el-button type="primary" style="margin:  10px 0" @click="showUrls">显示上传的链接</el-button>
+
+              </div>
+            </el-card>
+          </div>
+
+
         </el-main>
 
       </el-container>
@@ -119,7 +170,10 @@ export default {
       isCollapse: false,  // 不收缩
       asideWidth: '200px',
       collapseIcon: 'el-icon-s-fold',
-      users: []
+      users: [],
+      user: JSON.parse(localStorage.getItem('honey-user') || '{}'),
+      url: '',
+      urls: []
     }
   },
   mounted() {   // 页面加载完成之后触发
@@ -128,6 +182,32 @@ export default {
     })
   },
   methods: {
+    preview(url) {
+      window.open(url)  // 默认图片是预览
+    },
+    showUrls() {
+      console.log(this.urls)
+    },
+    handleMultipleFileUpload(response, file, fileList) {
+      this.urls = fileList.map(v => v.response?.data)
+    },
+    handleTableFileUpload(row, file, fileList) {
+      console.log(row, file, fileList)
+      row.avatar = file.response.data
+      // this.$set(row, 'avatar', file.response.data)
+      console.log(row)
+      // 触发更新就可以了
+      request.put('/user/update', row).then(res => {
+        if (res.code === '200') {
+          this.$message.success('上传成功')
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    handleFileUpload(response, file, fileList) {
+      this.fileList = fileList
+    },
     logout() {
       localStorage.removeItem('honey-user')  // 清除当前的token和用户数据
       this.$router.push('/login')
