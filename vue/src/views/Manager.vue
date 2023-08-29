@@ -8,27 +8,18 @@
           <span class="logo-title" v-show="!isCollapse">honey2024</span>
         </div>
 
-        <el-menu :collapse="isCollapse" :collapse-transition="false" router background-color="#001529" text-color="rgba(255, 255, 255, 0.65)" active-text-color="#fff" style="border: none" :default-active="$route.path">
-          <el-menu-item index="/">
-            <i class="el-icon-menu"></i>
+        <el-menu :collapse="isCollapse" :collapse-transition="false" router background-color="#001529" text-color="rgba(255, 255, 255, 0.65)"
+                 active-text-color="#fff" style="border: none" :default-active="$route.path">
+          <el-menu-item index="/home">
+            <i class="el-icon-s-home"></i>
             <span slot="title">系统首页</span>
           </el-menu-item>
-          <el-menu-item index="/1">
-            <i class="el-icon-house"></i>
-            <span slot="title">系统首页</span>
-          </el-menu-item>
-          <el-menu-item index="/2">
-            <i class="el-icon-house"></i>
-            <span slot="title">系统首页</span>
-          </el-menu-item>
-          <el-submenu index="3">
+          <el-submenu index="info" v-if="user.role === '管理员'">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>信息管理</span>
             </template>
-            <el-menu-item>用户信息</el-menu-item>
-            <el-menu-item>管理员信息</el-menu-item>
-            <el-menu-item index="/">系统首页</el-menu-item>
+            <el-menu-item index="/user">用户信息</el-menu-item>
           </el-submenu>
         </el-menu>
 
@@ -49,7 +40,7 @@
             <el-dropdown placement="bottom">
               <div style="display: flex; align-items: center; cursor: default">
                 <img src="@/assets/logo1.png" alt="" style="width: 40px; height: 40px; margin: 0 5px">
-                <span>管理员</span>
+                <span>{{ user.name }}</span>
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
@@ -63,93 +54,7 @@
 
         <!--        主体区域-->
         <el-main>
-          <div style="box-shadow: 0 0 10px rgba(0,0,0,.1); padding: 10px 20px; border-radius: 5px; margin-bottom: 10px">
-            早安，骚年，祝你开心每一天！
-          </div>
-
-          <div style="display: flex">
-            <el-card style="width: 30%; margin-right: 10px">
-              <div slot="header" class="clearfix">
-                <span>青哥哥带你做毕设2024</span>
-              </div>
-              <div>
-                2024毕设正式开始了！青哥哥带你手把手敲出来！
-                <div style="margin-top: 20px">
-                  <div style="margin: 10px 0"><strong>主题色</strong></div>
-                  <el-button type="primary">按钮</el-button>
-                  <el-button type="success">按钮</el-button>
-                  <el-button type="warning">按钮</el-button>
-                  <el-button type="danger">按钮</el-button>
-                  <el-button type="info">按钮</el-button>
-                </div>
-              </div>
-            </el-card>
-
-            <el-card style="width: 70%">
-              <div slot="header" class="clearfix">
-                <span>渲染用户的数据</span>
-              </div>
-              <div>
-                <el-table :data="users">
-                  <el-table-column label="ID" prop="id"></el-table-column>
-                  <el-table-column label="用户名" prop="username"></el-table-column>
-                  <el-table-column label="姓名" prop="name"></el-table-column>
-                  <el-table-column label="地址" prop="address"></el-table-column>
-                  <el-table-column label="文件上传">
-                   <template v-slot="scope">
-                     <el-upload
-                         action="http://localhost:9090/file/upload"
-                         :headers="{token: user.token}"
-                         :show-file-list="false"
-                         :on-success="(row, file, fileList) => handleTableFileUpload(scope.row, file, fileList)"
-                     >
-                       <el-button size="mini" type="primary">点击上传</el-button>
-                     </el-upload>
-                   </template>
-                  </el-table-column>
-                  <el-table-column label="文件上传">
-                    <template v-slot="scope">
-                      <el-image v-if="scope.row.avatar" :src="scope.row.avatar" style="width: 50px; height: 50px"></el-image>
-                      <div><el-button @click="preview(scope.row.avatar)">预览</el-button></div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-card>
-          </div>
-
-          <div style="display: flex; margin: 10px 0">
-            <el-card style="width: 50%; margin-right: 10px">
-              <div slot="header" class="clearfix">
-                <span>文件上传下载</span>
-              </div>
-              <div>
-                <el-upload
-                    action="http://localhost:9090/file/upload"
-                    :headers="{token: user.token}"
-                    :on-success="handleFileUpload"
-                >
-                  <el-button size="mini" type="primary">单文件上传</el-button>
-                </el-upload>
-
-              </div>
-
-              <div style="margin: 10px 0">
-                <el-upload
-                    action="http://localhost:9090/file/upload"
-                    :headers="{token: user.token}"
-                    :on-success="handleMultipleFileUpload"
-                    multiple
-                >
-                  <el-button size="mini" type="success">多文件上传</el-button>
-                </el-upload>
-                <el-button type="primary" style="margin:  10px 0" @click="showUrls">显示上传的链接</el-button>
-
-              </div>
-            </el-card>
-          </div>
-
-
+          <router-view />
         </el-main>
 
       </el-container>
