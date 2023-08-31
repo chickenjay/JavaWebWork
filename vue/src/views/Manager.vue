@@ -31,20 +31,20 @@
 
           <i :class="collapseIcon" style="font-size: 26px" @click="handleCollapse"></i>
           <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-left: 20px">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/user' }">用户管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: $route.path }">{{ $route.meta.name }}</el-breadcrumb-item>
           </el-breadcrumb>
 
           <div style="flex: 1; width: 0; display: flex; align-items: center; justify-content: flex-end">
             <i class="el-icon-quanping" style="font-size: 26px" @click="handleFull"></i>
             <el-dropdown placement="bottom">
               <div style="display: flex; align-items: center; cursor: default">
-                <img src="@/assets/logo1.png" alt="" style="width: 40px; height: 40px; margin: 0 5px">
+                <img :src="user.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" alt="" style="width: 40px; height: 40px; border-radius: 50%; margin: 0 5px">
                 <span>{{ user.name }}</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item>修改密码</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push('/person')">个人信息</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -54,7 +54,7 @@
 
         <!--        主体区域-->
         <el-main>
-          <router-view />
+          <router-view @update:user="updateUser" />
         </el-main>
 
       </el-container>
@@ -66,8 +66,6 @@
 
 <script>
 
-import request from "@/utils/request";
-
 export default {
   name: 'HomeView',
   data() {
@@ -75,43 +73,15 @@ export default {
       isCollapse: false,  // 不收缩
       asideWidth: '200px',
       collapseIcon: 'el-icon-s-fold',
-      users: [],
       user: JSON.parse(localStorage.getItem('honey-user') || '{}'),
-      url: '',
-      urls: []
     }
   },
   mounted() {   // 页面加载完成之后触发
-    request.get('/user/selectAll').then(res => {
-      this.users = res.data
-    })
+
   },
   methods: {
-    preview(url) {
-      window.open(url)  // 默认图片是预览
-    },
-    showUrls() {
-      console.log(this.urls)
-    },
-    handleMultipleFileUpload(response, file, fileList) {
-      this.urls = fileList.map(v => v.response?.data)
-    },
-    handleTableFileUpload(row, file, fileList) {
-      console.log(row, file, fileList)
-      row.avatar = file.response.data
-      // this.$set(row, 'avatar', file.response.data)
-      console.log(row)
-      // 触发更新就可以了
-      request.put('/user/update', row).then(res => {
-        if (res.code === '200') {
-          this.$message.success('上传成功')
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    },
-    handleFileUpload(response, file, fileList) {
-      console.log(response, file, fileList)
+    updateUser(user) {   // 获取子组件传过来的数据  更新当前页面的数据
+      this.user = JSON.parse(JSON.stringify(user))  // 让父级的对象跟子级的对象毫无关联
     },
     logout() {
       localStorage.removeItem('honey-user')  // 清除当前的token和用户数据

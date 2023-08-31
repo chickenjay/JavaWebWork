@@ -5,10 +5,7 @@ import com.example.springboot.common.AuthAccess;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -49,6 +46,19 @@ public class WebController {
         }
         user = userService.register(user);
         return Result.success(user);
+    }
+
+    /**
+     *  重置密码
+     */
+    @AuthAccess
+    @PutMapping("/password")
+    public Result password(@RequestBody User user) {
+        if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPhone())) {
+            return Result.error("数据输入不合法");
+        }
+        userService.resetPassword(user);
+        return Result.success();
     }
 
 }
