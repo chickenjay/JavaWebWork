@@ -1,6 +1,9 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,8 +15,16 @@ import com.example.springboot.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -111,6 +122,57 @@ public class UserController {
         // select * from user where username like '%#{username}%' and name like '%#{name}%'
         Page<User> page = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
         return Result.success(page);
+    }
+
+    /**
+     * 批量导出数据
+     */
+    @GetMapping("/export")
+    public void exportData(@RequestParam(required = false) String username,
+                           @RequestParam(required = false) String name,
+                           @RequestParam(required = false) String ids,  //   1,2,3,4,5
+                           HttpServletResponse response) throws IOException {
+        ExcelWriter writer = ExcelUtil.getWriter(true);
+
+        List<User> list;
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(ids)) {     // ["1", "2", "3"]   => [1,2,3]
+            List<Integer> idsArr1 = Arrays.stream(ids.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+            queryWrapper.in("id", idsArr1);
+        } else {
+            // 第一种全部导出或者条件导出
+            queryWrapper.like(StrUtil.isNotBlank(username), "username", username);
+            queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+        }
+        list = userService.list(queryWrapper);   // 查询出当前User表的所有数据
+        writer.write(list, true);
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("用户信息表", "UTF-8") + ".xlsx");
+        ServletOutputStream outputStream = response.getOutputStream();
+        writer.flush(outputStream, true);
+        writer.close();
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    /**
+     * 批量导入
+     * @param file 传入的excel文件对象
+     * @return 导入结果
+     */
+    @PostMapping("/import")
+    public Result importData(MultipartFile file) throws IOException {
+        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+        List<User> userList = reader.readAll(User.class);
+        // 写入数据到数据库
+        try {
+            userService.saveBatch(userList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("数据批量导入错误");
+        }
+        return Result.success();
     }
 
 }
