@@ -66,6 +66,8 @@
 
 <script>
 
+import user from "@/views/manager/User";
+
 export default {
   name: 'HomeView',
   data() {
@@ -77,7 +79,9 @@ export default {
     }
   },
   mounted() {   // 页面加载完成之后触发
-
+    if (!this.user.id) {   // 当前的浏览器没有用户信息
+      this.$router.push('/login')
+    }
   },
   methods: {
     updateUser(user) {   // 获取子组件传过来的数据  更新当前页面的数据

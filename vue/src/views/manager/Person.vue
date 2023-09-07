@@ -5,7 +5,7 @@
         <div style="margin: 15px; text-align: center">
           <el-upload
               class="avatar-uploader"
-              action="http://localhost:9090/file/upload"
+              :action="$baseUrl + '/file/upload'"
               :headers="{ token: user.token }"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"

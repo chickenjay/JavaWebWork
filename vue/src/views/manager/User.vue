@@ -10,7 +10,7 @@
       <el-button type="primary" plain @click="handleAdd">新增</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
       <el-button type="info" plain @click="exportData">批量导出</el-button>
-      <el-upload action="http://localhost:9090/user/import" :headers="{token: user.token}" :on-success="handleImport" style="display: inline-block; margin-left: 10px" :show-file-list="false">
+      <el-upload :action="$baseUrl + '/user/import'" :headers="{token: user.token}" :on-success="handleImport" style="display: inline-block; margin-left: 10px" :show-file-list="false">
         <el-button type="primary" plain>批量导入</el-button>
       </el-upload>
     </div>
@@ -75,7 +75,7 @@
         <el-form-item label="头像">
           <el-upload
               class="avatar-uploader"
-              action="http://localhost:9090/file/upload"
+              :action="$baseUrl + '/file/upload'"
               :headers="{ token: user.token }"
               :file-list="form.avatar? [form.avatar] : []"
               list-type="picture"
@@ -132,11 +132,11 @@ export default {
     },
     exportData() {   // 批量导出数据
       if (!this.ids.length) {   // 没有选择行的时候，全部导出  或者根据我的搜索条件导出
-        window.open('http://localhost:9090/user/export?token=' + this.user.token + "&username="
+        window.open(this.$baseUrl + '/user/export?token=' + this.user.token + "&username="
             + this.username + "&name=" + this.name)
       } else {      // [1,2,3] => '1,2,3'
         let idStr = this.ids.join(',')
-        window.open('http://localhost:9090/user/export?token=' + this.user.token + '&ids=' + idStr)
+        window.open(this.$baseUrl + '/user/export?token=' + this.user.token + '&ids=' + idStr)
       }
     },
     delBatch() {
