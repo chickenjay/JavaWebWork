@@ -6,7 +6,14 @@
 
 <a href='https://www.yuque.com/xiaqing-en2ii/dd4qwk/bw46pdvkfvqdgq0d'>课程大纲</a>
 
-## 获取方式
+## 预览
+
+http://121.4.123.248/
+
+注册账号即可访问，管理员账号：admin  admin
+（测试服务器，谢绝压测）
+
+## 笔记获取方式
 
 加我微信 xia_qing2012，备注：2024
 
