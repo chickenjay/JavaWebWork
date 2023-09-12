@@ -1,35 +1,31 @@
 <template>
   <div>
     <div>
-      <el-input style="width: 200px" placeholder="查询用户名" v-model="username"></el-input>
-      <el-input style="width: 200px; margin: 0 5px" placeholder="查询姓名"  v-model="name"></el-input>
-      <el-button type="primary" @click="load(1)">查询</el-button>
+      <el-input style="width: 200px" placeholder="查询标题" v-model="title"></el-input>
+      <el-button type="primary" style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
     <div style="margin: 10px 0">
       <el-button type="primary" plain @click="handleAdd">新增</el-button>
       <el-button type="danger" plain @click="delBatch">批量删除</el-button>
-      <el-button type="info" plain @click="exportData">批量导出</el-button>
-      <el-upload :action="$baseUrl + '/user/import'" :headers="{token: user.token}" :on-success="handleImport" style="display: inline-block; margin-left: 10px" :show-file-list="false">
-        <el-button type="primary" plain>批量导入</el-button>
-      </el-upload>
     </div>
     <el-table :data="tableData" stripe :header-cell-style="{ backgroundColor: 'aliceblue', color: '#666' }" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"></el-table-column>
       <el-table-column prop="id" label="序号" width="70" align="center"></el-table-column>
-      <el-table-column prop="username" label="用户名"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="phone" label="手机号"></el-table-column>
-      <el-table-column prop="email" label="邮箱"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
-      <el-table-column label="头像">
+      <el-table-column prop="title" label="标题"></el-table-column>
+      <el-table-column prop="description" label="简介"></el-table-column>
+      <el-table-column prop="content" label="内容">
         <template v-slot="scope">
-          <div style="display: flex; align-items: center">
-            <el-image style="width: 50px; height: 50px; border-radius: 50%" v-if="scope.row.avatar" :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]"></el-image>
-          </div>
+          <el-button @click="showContent(scope.row.content)" size="mini">显示内容</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="role" label="角色"></el-table-column>
+      <el-table-column prop="content" label="详情页">
+        <template v-slot="scope">
+          <el-button @click="$router.push('/newsDetail?id=' + scope.row.id)" size="mini">在详情页显示</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="author" label="发布人"></el-table-column>
+      <el-table-column prop="time" label="发布时间"></el-table-column>
       <el-table-column label="操作" align="center" width="180">
         <template v-slot="scope">
           <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
@@ -48,40 +44,16 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="用户信息" :visible.sync="fromVisible" width="30%">
+    <el-dialog title="新闻信息" :visible.sync="fromVisible" width="60%" @close="closeDialog" :close-on-click-modal="false">
       <el-form :model="form" label-width="80px" style="padding-right: 20px" :rules="rules" ref="formRef">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="用户名"></el-input>
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="form.title" placeholder="标题"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name" placeholder="姓名"></el-input>
+        <el-form-item label="简介" prop="content">
+          <el-input v-model="form.description" placeholder="简介"></el-input>
         </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="form.phone" placeholder="电话"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="form.email" placeholder="邮箱"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-input type="textarea" v-model="form.address" placeholder="地址"></el-input>
-        </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-radio-group v-model="form.role">
-            <el-radio label="管理员"></el-radio>
-            <el-radio label="用户"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="头像">
-          <el-upload
-              class="avatar-uploader"
-              :action="$baseUrl + '/file/upload'"
-              :headers="{ token: user.token }"
-              :file-list="form.avatar? [form.avatar] : []"
-              list-type="picture"
-              :on-success="handleAvatarSuccess"
-          >
-            <el-button type="primary">上传头像</el-button>
-          </el-upload>
+        <el-form-item label="内容" prop="content">
+          <div id="editor"></div>
         </el-form-item>
       </el-form>
 
@@ -91,52 +63,59 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="内容" :visible.sync="fromVisible1" width="60%">
+      <el-card class="w-e-text">
+        <div v-html="content"></div>
+      </el-card>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="fromVisible1 = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
 
   </div>
 </template>
 
 <script>
+import E from "wangeditor"
+import hljs from 'highlight.js'
+
 export default {
-  name: "User",
+  name: "News",
   data() {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
       pageSize: 5,  // 每页显示的个数
       username: '',
-      name: '',
+      title: '',
       total: 0,
       fromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('honey-user') || '{}'),
       rules: {
-        username: [
-          { required: true, message: '请输入账号', trigger: 'blur' },
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
         ]
       },
-      ids: []
+      ids: [],
+      editor: null,
+      content: '',
+      fromVisible1: false,
     }
   },
   created() {
     this.load()
   },
   methods: {
-    handleImport(res, file, fileList) {
-      if (res.code === '200') {
-        this.$message.success("操作成功")
-        this.load(1)
-      } else {
-        this.$message.error(res.msg)
-      }
+    showContent(content) {
+      this.content = content
+      this.fromVisible1 = true
     },
-    exportData() {   // 批量导出数据
-      if (!this.ids.length) {   // 没有选择行的时候，全部导出  或者根据我的搜索条件导出
-        window.open(this.$baseUrl + '/user/export?token=' + this.user.token + "&username="
-            + this.username + "&name=" + this.name)
-      } else {      // [1,2,3] => '1,2,3'
-        let idStr = this.ids.join(',')
-        window.open(this.$baseUrl + '/user/export?token=' + this.user.token + '&ids=' + idStr)
-      }
+    closeDialog() {
+      // 销毁编辑器
+      this.editor.destroy()
+      this.editor = null
     },
     delBatch() {
       if (!this.ids.length) {
@@ -144,7 +123,7 @@ export default {
         return
       }
       this.$confirm('您确认批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/user/delete/batch', { data: this.ids }).then(res => {
+        this.$request.delete('/news/delete/batch', { data: this.ids }).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -159,7 +138,7 @@ export default {
     },
     del(id) {
       this.$confirm('您确认删除吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/user/delete/' + id).then(res => {
+        this.$request.delete('/news/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -169,19 +148,51 @@ export default {
         })
       }).catch(() => {})
     },
+    setRichText() {
+      this.$nextTick(() => {
+        this.editor = new E(`#editor`)
+        this.editor.highlight = hljs
+        this.editor.config.uploadImgServer = this.$baseUrl + '/file/editor/upload'
+        this.editor.config.uploadFileName = 'file'
+        this.editor.config.uploadImgHeaders = {
+          token: this.user.token
+        }
+        this.editor.config.uploadImgParams = {
+          type: 'img',
+        }
+        this.editor.config.uploadVideoServer = this.$baseUrl + '/file/editor/upload'
+        this.editor.config.uploadVideoName = 'file'
+        this.editor.config.uploadVideoHeaders = {
+          token: this.user.token
+        }
+        this.editor.config.uploadVideoParams = {
+          type: 'video',
+        }
+        this.editor.create()  // 创建
+      })
+    },
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
       this.fromVisible = true   // 打开弹窗
+      this.setRichText()
+      setTimeout(() => {
+        this.editor.txt.html(row.content)  // 设置富文本内容
+      }, 0)
     },
     handleAdd() {   // 新增数据
-      this.form = { role: '用户' }  // 新增数据的时候清空数据
+      this.form = {}  // 新增数据的时候清空数据
       this.fromVisible = true   // 打开弹窗
+
+      this.setRichText()
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          // 获取编辑框的内容
+          let content = this.editor.txt.html()
+          this.form.content = content
           this.$request({
-            url: this.form.id ? '/user/update': '/user/add',
+            url: this.form.id ? '/news/update': '/news/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {
@@ -197,18 +208,16 @@ export default {
       })
     },
     reset() {
-      this.name = ''
-      this.username = ''
+      this.title = ''
       this.load()
     },
     load(pageNum) {  // 分页查询
       if (pageNum)  this.pageNum = pageNum
-      this.$request.get('/user/selectByPage', {
+      this.$request.get('/news/selectByPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          username: this.username,
-          name: this.name
+          title: this.title
         }
       }).then(res => {
         this.tableData = res.data.records
@@ -217,10 +226,6 @@ export default {
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum)
-    },
-    handleAvatarSuccess(response, file, fileList) {
-      // 把user的头像属性换成上传的图片的链接
-      this.form.avatar = response.data
     },
   }
 }
