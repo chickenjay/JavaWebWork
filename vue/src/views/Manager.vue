@@ -14,14 +14,14 @@
             <i class="el-icon-s-home"></i>
             <span slot="title">系统首页</span>
           </el-menu-item>
-          <el-submenu index="info" v-if="user.role === '管理员'">
+          <el-submenu index="info" >
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>信息管理</span>
             </template>
-            <el-menu-item index="/user">用户信息</el-menu-item>
+            <el-menu-item index="/user" v-if="user.role === '管理员'">用户信息</el-menu-item>
             <el-menu-item index="/news">新闻信息</el-menu-item>
-            <el-menu-item index="/notice">系统公告</el-menu-item>
+            <el-menu-item index="/notice" v-if="user.role === '管理员'">系统公告</el-menu-item>
           </el-submenu>
         </el-menu>
 
