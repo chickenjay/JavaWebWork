@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.springboot.common.HoneyLogs;
+import com.example.springboot.common.LogType;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.News;
 import com.example.springboot.entity.User;
@@ -29,6 +31,7 @@ public class NewsController {
     /**
      * 新增信息
      */
+    @HoneyLogs(operation = "新闻", type = LogType.ADD)
     @PostMapping("/add")
     public Result add(@RequestBody News news) {
         User currentUser = TokenUtils.getCurrentUser();  // 获取到当前登录的用户信息
@@ -41,6 +44,7 @@ public class NewsController {
     /**
      * 修改信息
      */
+    @HoneyLogs(operation = "新闻", type = LogType.UPDATE)
     @PutMapping("/update")
     public Result update(@RequestBody News news) {
         newsService.updateById(news);
@@ -50,6 +54,7 @@ public class NewsController {
     /**
      * 删除信息
      */
+    @HoneyLogs(operation = "新闻", type = LogType.DELETE)
     @DeleteMapping("/delete/{id}")
     public Result delete(@PathVariable Integer id) {
         newsService.removeById(id);
@@ -60,6 +65,7 @@ public class NewsController {
     /**
      * 批量删除信息
      */
+    @HoneyLogs(operation = "新闻", type = LogType.BATCH_DELETE)
     @DeleteMapping("/delete/batch")
     public Result batchDelete(@RequestBody List<Integer> ids) {
         newsService.removeBatchByIds(ids);

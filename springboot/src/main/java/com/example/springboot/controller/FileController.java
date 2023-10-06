@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import com.example.springboot.common.AuthAccess;
+import com.example.springboot.common.HoneyLogs;
+import com.example.springboot.common.LogType;
 import com.example.springboot.common.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,7 @@ public class FileController {
 
     private static final String ROOT_PATH =  System.getProperty("user.dir") + File.separator + "files";  // D:\B站\小白做毕设2024\代码\小白做毕设2024\files
 
+    @HoneyLogs(operation = "文件", type = LogType.ADD)
     @PostMapping("/upload")
     public Result upload(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();  // 文件的原始名称
@@ -61,6 +64,7 @@ public class FileController {
         outputStream.close();
     }
 
+    @HoneyLogs(operation = "文件", type = LogType.ADD)
     @PostMapping("/editor/upload")
     public Dict editorUpload(@RequestParam MultipartFile file, @RequestParam String type) throws IOException {
         String originalFilename = file.getOriginalFilename();  // 文件的原始名称

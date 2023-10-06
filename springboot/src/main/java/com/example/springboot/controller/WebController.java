@@ -2,6 +2,8 @@ package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.example.springboot.common.AuthAccess;
+import com.example.springboot.common.HoneyLogs;
+import com.example.springboot.common.LogType;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
@@ -26,6 +28,7 @@ public class WebController {
         return Result.success("success");
     }
 
+    @HoneyLogs(operation = "用户", type = LogType.LOGIN)
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
@@ -35,6 +38,7 @@ public class WebController {
         return Result.success(user);
     }
 
+    @HoneyLogs(operation = "用户", type = LogType.REGISTER)
     @AuthAccess
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
@@ -49,8 +53,9 @@ public class WebController {
     }
 
     /**
-     *  重置密码
+     * 重置密码
      */
+    @HoneyLogs(operation = "用户", type = LogType.UPDATE)
     @AuthAccess
     @PutMapping("/password")
     public Result password(@RequestBody User user) {

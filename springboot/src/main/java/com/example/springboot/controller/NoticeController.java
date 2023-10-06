@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.springboot.common.HoneyLogs;
+import com.example.springboot.common.LogType;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.Notice;
 import com.example.springboot.entity.User;
@@ -28,6 +30,7 @@ public class NoticeController {
     /**
      * 新增信息
      */
+    @HoneyLogs(operation = "公告", type = LogType.ADD)
     @PostMapping("/add")
     public Result add(@RequestBody Notice notice) {
         User currentUser = TokenUtils.getCurrentUser();  // 获取到当前登录的用户信息
@@ -40,6 +43,7 @@ public class NoticeController {
     /**
      * 修改信息
      */
+    @HoneyLogs(operation = "公告", type = LogType.UPDATE)
     @PutMapping("/update")
     public Result update(@RequestBody Notice notice) {
         noticeService.updateById(notice);
@@ -49,6 +53,7 @@ public class NoticeController {
     /**
      * 删除信息
      */
+    @HoneyLogs(operation = "公告", type = LogType.DELETE)
     @DeleteMapping("/delete/{id}")
     public Result delete(@PathVariable Integer id) {
         noticeService.removeById(id);
@@ -59,6 +64,7 @@ public class NoticeController {
     /**
      * 批量删除信息
      */
+    @HoneyLogs(operation = "公告", type = LogType.BATCH_DELETE)
     @DeleteMapping("/delete/batch")
     public Result batchDelete(@RequestBody List<Integer> ids) {
         noticeService.removeBatchByIds(ids);
