@@ -1,12 +1,12 @@
 <template>
-  <div style="height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #0f9876">
+  <div style="height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #6f85a1">
     <div style="display: flex; background-color: white; width: 50%; border-radius: 5px; overflow: hidden">
       <div style="flex: 1">
-        <img src="@/assets/login.png" alt="" style="width: 100%">
+        <img src="@/assets/login2.png" alt="" style="width: 100%">
       </div>
       <div style="flex: 1; display: flex; align-items: center; justify-content: center">
         <el-form :model="user" style="width: 80%" :rules="rules" ref="loginRef">
-          <div style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px">欢迎登录后台管理系统</div>
+          <div style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px">欢迎登录人事管理系统</div>
           <el-form-item prop="username">
             <el-input prefix-icon="el-icon-user" size="medium" placeholder="请输入账号" v-model="user.username"></el-input>
           </el-form-item>

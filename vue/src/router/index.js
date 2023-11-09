@@ -27,6 +27,7 @@ const routes = [
       { path: 'logs', name: 'Logs', meta: { name: '系统日志' }, component: () => import('../views/manager/Logs') },
       { path: 'charts', name: 'Charts', meta: { name: '数据统计' }, component: () => import('../views/manager/Charts') },
       { path: 'orders', name: 'Orders', meta: { name: '订单管理' }, component: () => import('../views/manager/Orders') },
+      { path: 'management', name: 'Management', meta: { name: '用户管理' }, component: () => import('../views/manager/UserManagement.vue') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },
@@ -40,19 +41,19 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  // to 是到达的路由信息
-  // from 是开源的路由信息
-  // next 是帮助我们跳转路由的函数
-  let adminPaths = ['/user']
-  let user = JSON.parse(localStorage.getItem('honey-user') || '{}')
-
-  if (user.role !== '管理员' && adminPaths.includes(to.path)) {
-    // 如果当前登录的用户不是管理员，然后当前的到达的路径是管理员才有权限访问的路径，那这个时候我就让用户去到一个没有权限的页面，不让他访问实际的页面
-    next('/403')
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   // to 是到达的路由信息
+//   // from 是开源的路由信息
+//   // next 是帮助我们跳转路由的函数
+//   let adminPaths = ['/user']
+//   let user = JSON.parse(localStorage.getItem('honey-user') || '{}')
+//
+//   if (user.role !== '管理员' && adminPaths.includes(to.path)) {
+//     // 如果当前登录的用户不是管理员，然后当前的到达的路径是管理员才有权限访问的路径，那这个时候我就让用户去到一个没有权限的页面，不让他访问实际的页面
+//     next('/403')
+//   } else {
+//     next()
+//   }
+// })
 
 export default router
