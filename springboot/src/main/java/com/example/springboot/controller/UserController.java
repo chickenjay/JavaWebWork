@@ -121,10 +121,12 @@ public class UserController {
     public Result selectByPage(@RequestParam Integer pageNum,
                                @RequestParam Integer pageSize,
                                @RequestParam String username,
-                               @RequestParam String name) {
+                               @RequestParam String name,
+                               @RequestParam Integer departmentid ) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<User>().orderByDesc("id");  // 默认倒序，让最新的数据在最上面
         queryWrapper.like(StrUtil.isNotBlank(username), "username", username);
         queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+        queryWrapper.like("departmentid",departmentid);
         // select * from user where username like '%#{username}%' and name like '%#{name}%'
         Page<User> page = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
         return Result.success(page);

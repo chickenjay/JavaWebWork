@@ -40,6 +40,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return getOne(queryWrapper); //  select * from user where username = #{username}
     }
 
+
     // 验证用户账户是否合法
     public User login(User user) {
         User dbUser = selectByUsername(user.getUsername());
@@ -79,4 +80,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         dbUser.setPassword("123");   // 重置密码
         updateById(dbUser);
     }
+
+
 }

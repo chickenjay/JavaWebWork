@@ -30,7 +30,8 @@ public class User {
     private String avatar;
     @Alias("角色")
     private String role;
-
+    @Alias("部门编号")
+    private Integer departmentid;
     @TableField(exist = false)
     private String token;
 
