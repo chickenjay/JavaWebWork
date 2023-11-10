@@ -3,7 +3,7 @@
     <div>
       <el-input style="width: 200px" placeholder="查询用户名" v-model="username"></el-input>
       <el-input style="width: 200px; margin: 0 5px" placeholder="查询姓名"  v-model="name"></el-input>
-      <el-input style="width: 200px; margin: 0 5px" placeholder="按部门查询"  v-model="departmentid"></el-input>
+      <el-input style="width: 200px; margin: 0 5px" placeholder="按部门查询"  v-model="department"></el-input>
       <el-button type="primary" @click="load(1)">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
@@ -63,6 +63,10 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="邮箱"></el-input>
         </el-form-item>
+
+        <el-form-item label="部门" prop="department">
+          <el-input v-model="form.department" placeholder="部门"></el-input>
+        </el-form-item>
         <el-form-item label="地址" prop="address">
           <el-input type="textarea" v-model="form.address" placeholder="地址"></el-input>
         </el-form-item>
@@ -106,7 +110,7 @@ export default {
       pageSize: 5,  // 每页显示的个数
       username: '',
       name: '',
-      departmentid:'',
+      department:'',
       total: 0,
       fromVisible: false,
       form: {},
@@ -211,7 +215,7 @@ export default {
           pageSize: this.pageSize,
           username: this.username,
           name: this.name,
-          departmentid:this.departmentid
+          department:this.department
         }
       }).then(res => {
         this.tableData = res.data.records
