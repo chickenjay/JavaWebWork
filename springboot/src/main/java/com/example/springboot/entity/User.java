@@ -32,6 +32,8 @@ public class User {
     private String role;
     @Alias("部门")
     private String department;
+
+
     @TableField(exist = false)
     private String token;
 

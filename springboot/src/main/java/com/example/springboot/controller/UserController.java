@@ -110,7 +110,12 @@ public class UserController {
         User user = userService.getById(id);
         return Result.success(user);
     }
-
+//    @GetMapping("/selectById/{department}")
+//    public Result selectByDep(@PathVariable String department){
+//        User s
+//
+//
+//    }
 
     /**
      * 多条件模糊查询用户信息

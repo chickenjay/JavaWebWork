@@ -1,18 +1,17 @@
 <template>
   <div>
-    <el-row :gutter="10">
-      <el-col :span="12">
+    <el-row :gutter="20">
+      <el-col :span="20">
         <el-card>
           <div style="width: 100%; height: 400px" id="line"></div>
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="24">
         <el-card>
           <div style="width: 100%; height: 400px" id="bar"></div>
         </el-card>
       </el-col>
     </el-row>
-
     <el-row :gutter="10" style="margin: 10px 0">
       <el-col :span="12">
         <el-card>
@@ -28,7 +27,7 @@ import * as echarts from 'echarts'
 
 const option = {
   title: {
-    text: '订单销售的趋势图',
+    text: '部门人数统计',
     left: 'center'
   },
   tooltip: {
@@ -56,7 +55,7 @@ const option = {
 
 const option1 = {
   title: {
-    text: '订单销售的柱状图',
+    text: '部门人数统计柱状图',
     left: 'center'
   },
   tooltip: {
@@ -84,7 +83,7 @@ const option1 = {
 
 const option2 = {
   title: {
-    text: '订单销售统计',
+    text: '部门构成',
     subtext: '比例图',
     left: 'center'
   },
@@ -143,12 +142,12 @@ export default {
 
     this.$request.get('/charts').then(res => {
       // 折线
-      option.xAxis.data = res.data?.line?.map(v => v.date) || []
+      option.xAxis.data = res.data?.line?.map(v => v.department) || []
       option.series[0].data = res.data?.line?.map(v => v.value) || []
       lineChart.setOption(option)
 
       // 柱状图
-      option1.xAxis.data = res.data?.bar?.map(v => v.name) || []
+      option1.xAxis.data = res.data?.bar?.map(v => v.department) || []
       option1.series[0].data = res.data?.bar?.map(v => v.value) || []
       barChart.setOption(option1)
 

@@ -86,35 +86,53 @@ public class WebController {
     @GetMapping("/charts")
     public Result charts() {
         // 包装折线图的数据
-        List<Orders> list = ordersService.list();
-        Set<String> dates = list.stream().map(Orders::getDate).collect(Collectors.toSet());
-        List<String> dateList = CollUtil.newArrayList(dates);
-        dateList.sort(Comparator.naturalOrder());
-        List<Dict> lineList = new ArrayList<>();
-        for (String date : dateList) {
-            // 统计当前日期的所有金额总数和
-            BigDecimal sum = list.stream().filter(orders -> orders.getDate().equals(date)).map(Orders::getMoney)
-                    .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-            Dict dict = Dict.create();
-            Dict line = dict.set("date", date).set("value", sum);
-            lineList.add(line);
+//        List<Orders> list = ordersService.list();
+//        Set<String> dates = list.stream().map(Orders::getDate).collect(Collectors.toSet());
+//        List<String> dateList = CollUtil.newArrayList(dates);
+//        dateList.sort(Comparator.naturalOrder());
+//        List<Dict> lineList = new ArrayList<>();
+
+        List<User> userList =userService.list();
+        Set<String> departments=userList.stream().map(User::getDepartment).collect(Collectors.toSet());
+        List<String> departmentList=CollUtil.newArrayList(departments);
+        List<Dict> linelist =new ArrayList<>();
+
+
+        for(String department:departmentList){
+            Integer value=0;
+            for(User u : userList){
+                if(u.getDepartment().equals(department)){ value+=1;};
+            }
+            Dict dict=Dict.create();
+            Dict line=dict.set("department",department).set("value",value);
+            linelist.add(line);
         }
+//        for (String date : dateList) {
+//            // 统计当前日期的所有金额总数和
+//            BigDecimal sum = list.stream().filter(orders -> orders.getDate().equals(date)).map(Orders::getMoney)
+//                    .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+//            Dict dict = Dict.create();
+//            Dict line = dict.set("date", date).set("value", sum);
+//            lineList.add(line);
+//        }
 
         // 柱状图数据
         List<Dict> barList = new ArrayList<>();
-        Set<String> categories = list.stream().map(Orders::getCategory).collect(Collectors.toSet());
-        for (String cate : categories) {
+        Set<String> categories = userList.stream().map(User::getDepartment).collect(Collectors.toSet());
+        for (String department:departmentList) {
             // 统计当前日期的所有金额总数和
-            BigDecimal sum = list.stream().filter(orders -> orders.getCategory().equals(cate)).map(Orders::getMoney)
-                    .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-            Dict dict = Dict.create();
-            Dict bar = dict.set("name", cate).set("value", sum);
+            Integer value=0;
+            for(User u : userList){
+                if(u.getDepartment().equals(department)){ value+=1;};
+            }
+            Dict dict=Dict.create();
+            Dict bar = dict.set("department",department ).set("value", value);
             barList.add(bar);
         }
 
 
         // 包装所有数据
-        Dict res = Dict.create().set("line", lineList).set("bar", barList);
+        Dict res = Dict.create().set("line", linelist).set("bar",barList);
         return Result.success(res);
     }
 
