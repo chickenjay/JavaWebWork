@@ -27,6 +27,21 @@
             <el-menu-item index="/orders">订单管理</el-menu-item>
 
           </el-submenu>
+          <el-submenu index="info" >
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>事务管理/业务办理</span>
+            </template>
+            <el-menu-item index="/user" v-if="user.role === '管理员'">招聘信息</el-menu-item>
+            <el-menu-item index="/news">新闻信息</el-menu-item>
+            <el-menu-item index="/notice" v-if="user.role === '管理员'">事务申请</el-menu-item>
+            <el-menu-item index="/notice" v-if="user.role === '管理员'">申请审批</el-menu-item>
+            <el-menu-item index="/logs" v-if="user.role === '管理员'">系统日志</el-menu-item>
+            <el-menu-item index="/charts" v-if="user.role === '管理员'">数据统计</el-menu-item>
+            <el-menu-item index="/orders">订单管理</el-menu-item>
+
+          </el-submenu>
+
         </el-menu>
 
       </el-aside>

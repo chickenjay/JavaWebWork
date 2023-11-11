@@ -28,6 +28,7 @@ const routes = [
       { path: 'charts', name: 'Charts', meta: { name: '数据统计' }, component: () => import('../views/manager/Charts') },
       { path: 'orders', name: 'Orders', meta: { name: '订单管理' }, component: () => import('../views/manager/Orders') },
       { path: 'management', name: 'Management', meta: { name: '用户管理' }, component: () => import('../views/manager/UserManagement.vue') },
+      { path: 'myissues', name: 'MyIssues', meta: { name: '个人事务管理' }, component: () => import('../views/manager/MyIssues.vue') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

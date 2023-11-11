@@ -106,6 +106,7 @@ public class NoticeController {
     }
 
 
+
     /**
      * 多条件模糊查询信息
      * pageNum 当前的页码
@@ -130,6 +131,25 @@ public class NoticeController {
         }
         return Result.success(page);
     }
-
+    @GetMapping("/selectByUserIdPage")
+    public Result selectByPage(@RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize,
+                               @RequestParam String title,
+                               @RequestParam Integer userid) {
+        QueryWrapper<Notice> queryWrapper = new QueryWrapper<Notice>().orderByDesc("id");  // 默认倒序，让最新的数据在最上面
+        queryWrapper.eq("userid",userid);
+        Page<Notice> page = noticeService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        List<Notice> records = page.getRecords();
+//        List<User> list = userService.list();
+        for (Notice record : records) {
+            Integer authorid = record.getUserid();
+            User user = userService.getById(authorid);
+//            String author = list.stream().filter(u -> u.getId().equals(authorid)).findFirst().map(User::getName).orElse("");
+            if (user != null) {
+                record.setUser(user.getName());
+            }
+        }
+        return Result.success(page);
+    }
 
 }

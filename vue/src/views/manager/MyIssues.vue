@@ -61,7 +61,7 @@
 <script>
 
 export default {
-  name: "Notice",
+  name: "Myissues",
   data() {
     return {
       tableData: [],  // 所有的数据
@@ -91,9 +91,9 @@ export default {
   methods: {
     changeOpen(form) {
       // 调用更新的接口  更新数据到数据库
-
       this.form = JSON.parse(JSON.stringify(form))
       this.sendSaveRequest()   // 直接发请求就可以了
+
     },
     delBatch() {
       if (!this.ids.length) {
@@ -162,18 +162,18 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum)  this.pageNum = pageNum
-      this.$request.get('/notice/selectByPage', {
+      this.$request.get('/notice/selectByUserIdPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           title: this.title,
-          userId:this.userId
+          userid:this.user.id
 
         }
       }).then(res => {
+        console.log(this.user.id)
         this.tableData = res.data.records
         this.total = res.data.total
-        console.log(this.user.id)
       })
     },
     handleCurrentChange(pageNum) {
