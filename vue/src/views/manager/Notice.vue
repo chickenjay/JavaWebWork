@@ -16,7 +16,7 @@
       <el-table-column prop="content" label="内容" show-overflow-tooltip></el-table-column>
       <el-table-column prop="user" label="发布人"></el-table-column>
       <el-table-column prop="time" label="发布时间"></el-table-column>
-      <el-table-column label="是否公开">
+      <el-table-column label="是否同意">
         <template v-slot="scope">
           <el-switch v-model="scope.row.open" @change="changeOpen(scope.row)"></el-switch>
         </template>

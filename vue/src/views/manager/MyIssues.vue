@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <el-input style="width: 200px" placeholder="查询标题" v-model="title"></el-input>
+      <el-input style="width: 200px" placeholder="按照标题查询" v-model="title"></el-input>
       <el-button type="primary" style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
@@ -16,8 +16,8 @@
       <el-table-column prop="content" label="内容" show-overflow-tooltip></el-table-column>
       <el-table-column prop="user" label="发布人"></el-table-column>
       <el-table-column prop="time" label="发布时间"></el-table-column>
-      <el-table-column label="是否公开">
-        <template v-slot="scope">
+      <el-table-column label="是否提交">
+        <template v-slot="scope" >
           <el-switch v-model="scope.row.open" @change="changeOpen(scope.row)"></el-switch>
         </template>
       </el-table-column>

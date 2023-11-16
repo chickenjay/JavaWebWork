@@ -97,7 +97,6 @@ public class WebController {
         List<String> departmentList=CollUtil.newArrayList(departments);
         List<Dict> linelist =new ArrayList<>();
 
-
         for(String department:departmentList){
             Integer value=0;
             for(User u : userList){
@@ -123,7 +122,9 @@ public class WebController {
             // 统计当前日期的所有金额总数和
             Integer value=0;
             for(User u : userList){
-                if(u.getDepartment().equals(department)){ value+=1;};
+                if(u.getDepartment().equals(department)){
+
+                    value+=1;};
             }
             Dict dict=Dict.create();
             Dict bar = dict.set("department",department ).set("value", value);

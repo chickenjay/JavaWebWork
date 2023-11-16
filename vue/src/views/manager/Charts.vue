@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row :gutter="20">
-      <el-col :span="20">
+      <el-col :span="24">
         <el-card>
           <div style="width: 100%; height: 400px" id="line"></div>
         </el-card>
@@ -13,7 +13,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="10" style="margin: 10px 0">
-      <el-col :span="12">
+      <el-col :span="24">
         <el-card>
           <div style="width: 100%; height: 400px" id="pie"></div>
         </el-card>
@@ -45,7 +45,7 @@ const option = {
   },
   series: [
     {
-      name: '金额',
+      name: '人数',
       data: [],
       type: 'line',
       smooth: true

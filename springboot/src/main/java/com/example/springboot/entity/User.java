@@ -5,32 +5,46 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @TableName("user")
 public class User {
 
-    @TableId(type=IdType.AUTO)
-    @Alias("序号")
+    @TableId(type=IdType.AUTO,value ="id")
     private Integer id;
-    @Alias("用户名")
+
     private String username;
-    @Alias("密码")
+
     private String password;
-    @Alias("姓名")
+
     private String name;
-    @Alias("电话")
+
     private String phone;
-    @Alias("邮箱")
+
     private String email;
-    @Alias("地址")
+
     private String address;
-    @Alias("头像")
+
     private String avatar;
-    @Alias("角色")
+
     private String role;
-    @Alias("部门")
+
     private String department;
 
 
