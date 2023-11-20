@@ -25,6 +25,7 @@
             <el-menu-item index="/logs" v-if="user.role === '管理员'">系统日志</el-menu-item>
             <el-menu-item index="/charts" v-if="user.role === '管理员'">数据统计</el-menu-item>
             <el-menu-item index="/salaryMap" v-if="user.role === '管理员'">薪资对照表</el-menu-item>
+            <el-menu-item index="/department" v-if="user.role === '管理员'">部门管理</el-menu-item>
             <el-menu-item index="/orders">订单管理</el-menu-item>
 
           </el-submenu>

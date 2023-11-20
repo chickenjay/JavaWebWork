@@ -30,6 +30,7 @@ const routes = [
       { path: 'management', name: 'Management', meta: { name: '用户管理' }, component: () => import('../views/manager/UserManagement.vue') },
       { path: 'salaryMap', name: 'SalaryMap', meta: { name: '薪资对照表管理' }, component: () => import('../views/manager/SalaryMap.vue') },
       { path: 'myissues', name: 'MyIssues', meta: { name: '个人事务管理' }, component: () => import('../views/manager/MyIssues.vue') },
+      { path: 'department', name: 'Department', meta: { name: '部门管理' }, component: () => import('../views/manager/Department.vue') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },
@@ -47,7 +48,7 @@ router.beforeEach((to, from, next) => {
   // to 是到达的路由信息
   // from 是开源的路由信息
   // next 是帮助我们跳转路由的函数
-  let adminPaths = ['/user','/salaryMap']
+  let adminPaths = ['/user','/salaryMap','/department']
   let user = JSON.parse(localStorage.getItem('honey-user') || '{}')
 
   if (user.role !== '管理员' && adminPaths.includes(to.path)) {
